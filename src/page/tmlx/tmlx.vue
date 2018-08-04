@@ -5,49 +5,51 @@
         left-text="返回"
         left-arrow
         @click-left="onClickLeft"/>
+      <router-link to='/sxlx'   >
+        <van-row type="flex" justify="space-around">
+          <van-col >
+            <van-circle
+              v-model="currentRate1"
+              color="#BF3EFF"
+              fill="#fff"
+              size="120px"
+              layer-color="#eee"
+              :text="currentRate1.toFixed(0) + '%'"
+              :rate="rate1"
+              :speed="100"
+              :clockwise="true"
+              :stroke-width="60"
+            />
+          </van-col>
+          <van-col>
+              <i class="iconfont icon-lianxi1"></i>
+              <p>顺序练习</p>
+          </van-col>
+        </van-row>
+      </router-link>
 
-      <van-row type="flex" justify="space-around">
-        <van-col >
-          <van-circle
-            v-model="currentRate"
-            color="#BF3EFF"
-            fill="#fff"
-            size="120px"
-            layer-color="#eee"
-            :text="text"
-            :rate="rate"
-            :speed="100"
-            :clockwise="true"
-            :stroke-width="60"
-          />
-        </van-col>
-        <van-col>
-            <i class="iconfont icon-lianxi"></i>
-            <p>顺序练习</p>
-        </van-col>
-
-      </van-row>
-
-      <van-row type="flex" justify="space-around">
-        <van-col >
-          <van-circle
-            v-model="currentRate"
-            color="#13ce66"
-            fill="#fff"
-            size="120px"
-            layer-color="#eee"
-            :text="text"
-            :rate="rate"
-            :speed="100"
-            :clockwise="true"
-            :stroke-width="60"
-          />
-        </van-col>
-        <van-col>
-          <i class="iconfont icon-iconfontsuijibofang0101"></i>
-          <p>随机练习</p>
-        </van-col>
-      </van-row>
+      <router-link to='/tmlx'  @click.native="go(false)" >
+        <van-row  class="sjlx" type="flex" justify="space-around">
+          <van-col >
+            <van-circle
+              v-model="currentRate2"
+              color="#13ce66"
+              fill="#fff"
+              size="120px"
+              layer-color="#eee"
+              :text="currentRate2.toFixed(0) + '%'"
+              :rate="rate2"
+              :speed="100"
+              :clockwise="true"
+              :stroke-width="60"
+            />
+          </van-col>
+          <van-col>
+            <i class="iconfont icon-iconfontsuijibofang0101"></i>
+            <p>随机练习</p>
+          </van-col>
+        </van-row>
+      </router-link>
 
     </div>
 </template>
@@ -57,19 +59,31 @@
       name: "tmlx",
       data() {
         return {
-          currentRate: 0,
-          rate:10
+          currentRate1:0,
+          currentRate2: 0,
+          //目标进度值，需动态修改
+          rate1:1,
+          rate2:0
         };
       },
       methods: {
         onClickLeft() {
           this.$router.back();
         },
+        setProperty(value){
+          return value;
+        },
+        go(isAvail){
+          if(!isAvail){
+            this.$toast({
+              duration:1000,
+              message:'功能开发中'
+            });
+          }
+        }
       },
      computed: {
-       text() {
-         return this.currentRate.toFixed(0) + '%'
-       }
+
      }
     }
 </script>
@@ -99,9 +113,12 @@
           margin: 4px;
         }
       }
+
     }
-    .van-row:nth-child(3){
-      background-color: lime;
-    }
+
   }
+  .sjlx{
+    background-color: lime !important;
+  }
+
 </style>
