@@ -1,7 +1,7 @@
 <template>
     <div class="index">
 
-      <van-row class="home-banner">
+      <van-row class="home-banner" type="flex"  justify="center">
         <van-col>
           <img src="@/assets/banner01.png"/>
         </van-col>
@@ -61,25 +61,25 @@ export default {
           isAvail:false
         },
         {
-          text:"阅读",
+          text:"学车流程",
           path:"/",
           iconName:"yd",
           span:6,
           isAvail:false
         },
         {
-          text:"练习",
+          text:"找驾校",
           path:"/",
-          iconName:"lx",
+          iconName:"jxcx",
           span:6,
           isAvail:false
         },
         {
           text:"关于",
-          path:"/my",
+          path:"/",
           iconName:"gy",
           span:6,
-          isAvail:true
+          isAvail:false
         },
       ],
 
@@ -87,13 +87,13 @@ export default {
       tmlxNav:[
         {
           text:"科目一练习",
-          path:"/",
+          path:"/tmlx",
           className:"iconfont icon-zaixiankaoshi blue",
           span:6,
-          isAvail:false
+          isAvail:true
         },
         {
-          text:"科目一练习",
+          text:"模拟考试",
           path:"/",
           className:"iconfont icon-qiche blue",
           span:6,
