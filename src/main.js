@@ -8,6 +8,7 @@ import 'vant/lib/vant-css/index.css';
 import '@/assets/icon/iconfont.css'
 import 'vue2-animate/dist/vue2-animate.min.css';
 import VueLazyload from 'vue-lazyload' // 懒加载
+var VueTouch = require('vue-touch')
 
 Vue.use(VueLazyload, {
   preLoad: 1.3,
@@ -15,6 +16,7 @@ Vue.use(VueLazyload, {
   loading: '@/assets/loading.gif',
   attempt: 1
 })
+Vue.use(VueTouch)
 Vue.config.productionTip = false
 Vue.use(Vant);
 /* eslint-disable no-new */

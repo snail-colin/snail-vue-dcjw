@@ -50,13 +50,17 @@
           </van-col>
         </van-row>
       </router-link>
-
+      <foot-nav ></foot-nav>
     </div>
 </template>
 
 <script>
+  import nav from '@/components/nav';
     export default {
       name: "tmlx",
+      components:{
+        'foot-nav':nav,
+      },
       data() {
         return {
           currentRate1:0,
