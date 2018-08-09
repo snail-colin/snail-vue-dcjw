@@ -39,84 +39,29 @@
 <script>
     export default {
       name: "sxlx",
+      props:["recordIndex"],
       data() {
         return {
           value:3,
           size:16,
-          total:2,
-          num:1,
+          total:0,
           //默认0
-          currentIndex:0,
-          questionMap:[
-            {
-              question: "第一题",
-              id: 1,
-              type:0,
-              remark:"跟进计划计划还比你好吧",
-              ishow:true,
-              checked: false,
-              option: [
-                {
-                  name: '单选框 1.',
-                  value: 1,
-                  isRight:true,
-                  checked: false,
-                  isShow:false
-                },
-                {
-                  name: '单选框 2',
-                  value: 2,
-                  isRight: false,
-                  checked: false,
-                  isShow:false
-                },
-                {
-                  name: '单选框 3',
-                  value: 3,
-                  isRight: false,
-                  checked: false,
-                  isShow:false
-                }
-              ]
-            },
-            {
-              question: "第二题",
-              id: 2,
-              type:1,
-              remark:"23213213213",
-              ishow:false,
-              checked: false,
-              option: [
-                {
-                  name: '第二单选框 1.',
-                  value: 1,
-                  isRight:true,
-                  checked: false,
-                  isShow:false
-                },
-                {
-                  name: '第二单选框 2',
-                  value: 2,
-                  isRight: false,
-                  checked: false,
-                  isShow:false
-                },
-                {
-                  name: '第二单选框 3',
-                  value: 3,
-                  isRight: false,
-                  checked: false,
-                  isShow:false
-                }
-              ]
-            }
-          ]
+          currentIndex:this.recordIndex == undefined?0:this.recordIndex-1,
+          isSelect:false,
+          pageSize:2,
+          pageNum:1,
+          //记录下标,默认0
+          recordIndexShow:this.recordIndex == undefined?0:this.recordIndex-1,
+          questionMap:[]
         }
       },
       computed: {
           progress:function(){
             return (this.currentIndex+1) + "/" + this.total;
           },
+      },
+      created:function(){
+        this.initData();
       },
         methods:{
           setProperty(value,type){
@@ -128,9 +73,9 @@
           click(pindex,cindex,isRight){
               if(!this.questionMap[pindex].checked){
                 if(!isRight){
-                  var optionArray = this.questionMap[pindex].option;
-                  for(var i = 0;i< optionArray.length;i++){
-                    var option = optionArray[i];
+                  let optionArray = this.questionMap[pindex].option;
+                  for(let i = 0;i< optionArray.length;i++){
+                    let option = optionArray[i];
                     if(option.isRight){
                       option.checked=true;
                       option.isShow=true;
@@ -139,34 +84,60 @@
                   }
                   this.$toast({
                     duration:1000,
-                    message:'答案不正确'
+                    message:'存入错误答案到题集'
                   });
                 }
                 this.currentIndex=pindex;
                 this.questionMap[pindex].option[cindex].checked=isRight;
                 this.questionMap[pindex].option[cindex].isShow=true;
                 this.questionMap[pindex].checked=true;
+                this.isSelect=true;
                 //需要提交答案
 
               }
           },
           onSwipeLeft(){
-            this.currentIndex++;
-            this.currentIndex > this.total-1 ? this.currentIndex = this.total-1 :this.currentIndex;
-            for (var i = 0 ; i < this.questionMap.length; i++){
-              this.questionMap[i].ishow=false;
+            if(this.questionMap[this.currentIndex] != undefined && this.questionMap[this.currentIndex].checked){
+              this.currentIndex++;
+              this.currentIndex > this.total-1 ? this.currentIndex = this.total-1 :this.currentIndex;
+              if(this.currentIndex == this.pageSize * this.pageNum ){
+                this.pageNum++;
+                this.initData(true);
+              }else{
+                for (let i = 0 ; i < this.questionMap.length; i++){
+                  this.questionMap[i].ishow=false;
+                }
+                this.questionMap[this.currentIndex].ishow=true;
+              }
             }
-            this.questionMap[this.currentIndex].ishow=true;
           },
           onSwipeRight(){
             this.currentIndex--;
             this.currentIndex < 0 ? this.currentIndex = 0 :this.currentIndex;
-            console.info( this.currentIndex);
-            for (var i = 0 ; i < this.questionMap.length; i++){
+            for (let i = 0 ; i < this.questionMap.length; i++){
               this.questionMap[i].ishow=false;
             }
             this.questionMap[this.currentIndex].ishow=true;
-
+          },
+          initData(isSwipeLeft){
+            this.$http.post('/dcwj/getQuestionList.htm', {
+              pageSize:this.pageSize,
+              pageNum:this.pageNum
+            })
+              .then((response)=>{
+                let rst =  response.data;
+                this.total=rst['total'];
+                this.questionMap =this.questionMap.concat(rst.resultList);
+                this.questionMap[this.recordIndexShow].ishow=true;
+                if(isSwipeLeft){
+                  for (let i = 0 ; i < this.questionMap.length; i++){
+                    this.questionMap[i].ishow=false;
+                  }
+                  this.questionMap[this.currentIndex].ishow=true;
+                }
+              }).catch(function (response) {
+              console.log(response);
+            });
           }
         }
     }

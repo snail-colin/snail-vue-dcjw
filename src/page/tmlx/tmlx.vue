@@ -5,7 +5,7 @@
         left-text="返回"
         left-arrow
         @click-left="onClickLeft"/>
-      <router-link to='/sxlx'   >
+      <router-link :to='sxlxPath'    >
         <van-row type="flex" justify="space-around">
           <van-col >
             <van-circle
@@ -67,7 +67,9 @@
           currentRate2: 0,
           //目标进度值，需动态修改
           rate1:1,
-          rate2:0
+          rate2:0,
+          sxlxPath:'/sxlx/1',
+
         };
       },
       methods: {

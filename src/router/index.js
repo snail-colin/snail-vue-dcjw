@@ -24,9 +24,10 @@ export default new Router({
       component: tmlx
     },
     {
-      path: '/sxlx',
+      path: '/sxlx/:recordIndex',
       name: 'sxlx',
-      component: sxlx
+      component: sxlx,
+      props:true,
     }
   ]
 })
