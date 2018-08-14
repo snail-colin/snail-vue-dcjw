@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <transition  name="custom-classes-transition"  enter-active-class="animated slideInRight" >
+    <transition  name="custom-classes-transition"  enter-active-class="animated slideInRight"  >
       <router-view></router-view>
     </transition>
   </div>

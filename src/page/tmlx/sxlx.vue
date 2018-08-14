@@ -3,7 +3,7 @@
         <v-touch v-on:swipeleft="onSwipeLeft" v-on:swiperight="onSwipeRight">
 
         <van-nav-bar
-          title="顺序练习"
+          :title="title"
           left-text="返回"
           :right-text="progress"
           left-arrow
@@ -26,7 +26,7 @@
                   <div class="title-rate"><van-rate v-model="value" :size="size" /></div>
                 </div>
                 <div class="remark">
-                  <div>{{itme.remark}}</div>
+                  <div  v-html="itme.remark"></div>
                 </div>
               </div>
               </transition>
@@ -39,19 +39,21 @@
 <script>
     export default {
       name: "sxlx",
-      props:["recordIndex"],
       data() {
         return {
           value:3,
           size:16,
           total:0,
+          ptype:this.$route.query.ptype,
+          title:this.$route.query.ptitle,
           //默认0
-          currentIndex:this.recordIndex == undefined?0:this.recordIndex-1,
+          currentIndex:this.$route.query.recordIndex == undefined?0:this.$route.query.recordIndex-1,
           isSelect:false,
-          pageSize:2,
+          pageSize:9999,
           pageNum:1,
+          openid:this.$route.query.openid,
           //记录下标,默认0
-          recordIndexShow:this.recordIndex == undefined?0:this.recordIndex-1,
+          recordIndexShow:this.$route.query.recordIndex == undefined?0:this.$route.query.recordIndex-1,
           questionMap:[]
         }
       },
@@ -72,6 +74,7 @@
           },
           click(pindex,cindex,isRight){
               if(!this.questionMap[pindex].checked){
+                let msg = '存入答案到题集';
                 if(!isRight){
                   let optionArray = this.questionMap[pindex].option;
                   for(let i = 0;i< optionArray.length;i++){
@@ -82,10 +85,7 @@
                       break;
                     }
                   }
-                  this.$toast({
-                    duration:1000,
-                    message:'存入错误答案到题集'
-                  });
+                  msg = '存入错误答案到题集';
                 }
                 this.currentIndex=pindex;
                 this.questionMap[pindex].option[cindex].checked=isRight;
@@ -93,7 +93,20 @@
                 this.questionMap[pindex].checked=true;
                 this.isSelect=true;
                 //需要提交答案
-
+                this.$toast({
+                  duration:1000,
+                  message:msg
+                });
+                this.$http.post('/dcwj/saveAnswer.htm', {
+                  type:this.ptype,
+                  openid:this.openid,
+                  currentIndex:this.currentIndex,
+                  question:JSON.stringify(this.questionMap[pindex])
+                }).then((response)=>{
+                  console.log(response);
+                }).catch(function (response) {
+                  console.log(response);
+                });
               }
           },
           onSwipeLeft(){
@@ -121,10 +134,9 @@
           },
           initData(isSwipeLeft){
             this.$http.post('/dcwj/getQuestionList.htm', {
-              pageSize:this.pageSize,
-              pageNum:this.pageNum
-            })
-              .then((response)=>{
+              type:this.ptype,
+              openid:this.openid
+            }).then((response)=>{
                 let rst =  response.data;
                 this.total=rst['total'];
                 this.questionMap =this.questionMap.concat(rst.resultList);
@@ -135,6 +147,7 @@
                   }
                   this.questionMap[this.currentIndex].ishow=true;
                 }
+                // console.info(this.questionMap)
               }).catch(function (response) {
               console.log(response);
             });

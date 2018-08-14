@@ -5,7 +5,8 @@
         left-text="返回"
         left-arrow
         @click-left="onClickLeft"/>
-      <router-link :to='sxlxPath'    >
+
+      <router-link :to="{path:'/sxlx',query: {recordIndex: sxRecordIndex,ptitle:'顺序练习',ptype:0,openid:openid}}"   >
         <van-row type="flex" justify="space-around">
           <van-col >
             <van-circle
@@ -28,7 +29,7 @@
         </van-row>
       </router-link>
 
-      <router-link to='/tmlx'  @click.native="go(false)" >
+      <router-link :to="{path:'/sxlx',query: {recordIndex: sjRecordIndex,ptitle:'随机练习',ptype:1,openid:openid}}"  >
         <van-row  class="sjlx" type="flex" justify="space-around">
           <van-col >
             <van-circle
@@ -65,11 +66,12 @@
         return {
           currentRate1:0,
           currentRate2: 0,
+          openid:"test-openid",
           //目标进度值，需动态修改
-          rate1:1,
+          rate1:0,
           rate2:0,
-          sxlxPath:'/sxlx/1',
-
+          sxRecordIndex:1,
+          sjRecordIndex:1,
         };
       },
       methods: {
@@ -86,11 +88,32 @@
               message:'功能开发中'
             });
           }
+        },
+        initData(){
+          this.$http.post('/dcwj/getAnswerSchedule.htm', {
+            openid:this.openid,
+          }).then((response)=>{
+            let rst =  response.data;
+            console.log(rst);
+            if(rst.recordCount_0){
+              this.sxRecordIndex = rst.recordCount_0;
+              this.rate1 = Math.floor((rst.recordCount_0/rst.total_0)*100);
+            }
+            if(rst.recordCount_1){
+              this.sjRecordIndex = rst.recordCount_1;
+              this.rate2 = Math.floor((rst.recordCount_1/rst.total_1)*100);
+            }
+          }).catch(function (response) {
+            console.log(response);
+          });
         }
       },
      computed: {
 
-     }
+     },
+      created:function(){
+        this.initData();
+      },
     }
 </script>
 
