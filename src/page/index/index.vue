@@ -62,10 +62,10 @@ export default {
         },
         {
           text:"学车流程",
-          path:"/",
+          path:"/learn-car",
           iconName:"yd",
           span:6,
-          isAvail:false
+          isAvail:true
         },
         {
           text:"找驾校",

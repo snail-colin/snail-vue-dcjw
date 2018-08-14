@@ -4,6 +4,7 @@ import index from '@/page/index/index'
 import my from '@/page/my/my'
 import tmlx from '@/page/tmlx/tmlx'
 import sxlx from '@/page/tmlx/sxlx'
+import learnCar from '@/page/learn/learn-car'
 Vue.use(Router)
 
 export default new Router({
@@ -29,6 +30,11 @@ export default new Router({
       name: 'sxlx',
       component: sxlx,
       props:true,
-    }
+    },
+    {
+      path: '/learn-car',
+      name: 'learn-car',
+      component: learnCar
+    },
   ]
 })
