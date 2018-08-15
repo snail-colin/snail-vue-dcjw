@@ -24,5 +24,9 @@ export default {
 img{
   width: 100%;
 }
+  a:link {color: #000}     /* 未访问的链接 */
+  a:visited {color: #000}  /* 已访问的链接 */
+  a:hover {color: #000}    /* 当有鼠标悬停在链接上 */
+  a:active {color: #000}   /* 被选择的链接 */
 
 </style>

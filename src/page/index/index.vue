@@ -94,10 +94,10 @@ export default {
         },
         {
           text:"模拟考试",
-          path:"/",
+          path:"/exam-home",
           className:"iconfont icon-qiche blue",
           span:6,
-          isAvail:false
+          isAvail:true
         },
         {
           text:"暂无",
@@ -132,6 +132,7 @@ export default {
 .index{
   height: 100%;
 }
+a{ -webkit-tap-highlight-color:rgba(255,0,0,0);}
 .home{
 
   &-banner{

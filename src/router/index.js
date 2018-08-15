@@ -5,8 +5,10 @@ import my from '@/page/my/my'
 import tmlx from '@/page/tmlx/tmlx'
 import sxlx from '@/page/tmlx/sxlx'
 import learnCar from '@/page/learn/learn-car'
-Vue.use(Router)
+import examHome from '@/page/exam/exam-home'
+import exam from '@/page/exam/exam';
 
+Vue.use(Router);
 export default new Router({
   routes: [
     {
@@ -35,6 +37,16 @@ export default new Router({
       path: '/learn-car',
       name: 'learn-car',
       component: learnCar
+    },
+    {
+      path: '/exam-home',
+      name: 'exam-home',
+      component: examHome
+    },
+    {
+      path: '/exam',
+      name: 'exam',
+      component: exam
     },
   ]
 })
