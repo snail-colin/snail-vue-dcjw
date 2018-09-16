@@ -90,6 +90,7 @@
                 this.currentIndex=pindex;
                 this.questionMap[pindex].option[cindex].checked=isRight;
                 this.questionMap[pindex].option[cindex].isShow=true;
+                this.questionMap[pindex].option[cindex]['select']=true;
                 this.questionMap[pindex].checked=true;
                 this.isSelect=true;
                 //需要提交答案

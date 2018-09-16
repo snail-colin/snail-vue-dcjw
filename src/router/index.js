@@ -7,6 +7,10 @@ import sxlx from '@/page/tmlx/sxlx'
 import learnCar from '@/page/learn/learn-car'
 import examHome from '@/page/exam/exam-home'
 import exam from '@/page/exam/exam';
+import examResult from '@/page/exam/exam-result';
+import examBaHome from '@/page/exam-ba/exam-ba-home'
+import examBa from '@/page/exam-ba/exam-ba';
+import examBaResult from '@/page/exam-ba/exam-ba-result';
 
 Vue.use(Router);
 export default new Router({
@@ -48,5 +52,25 @@ export default new Router({
       name: 'exam',
       component: exam
     },
+    {
+      path: '/exam-result',
+      name: 'exam-result',
+      component: examResult
+    },
+    {
+      path: '/exam-ba-home',
+      name: 'exam-ba-home',
+      component: examBaHome
+    },
+    {
+      path: '/exam-ba',
+      name: 'exam-ba',
+      component: examBa
+    },
+    {
+    path: '/exam-ba-result',
+      name: 'exam-ba-result',
+      component: examBaResult
+  },
   ]
 })

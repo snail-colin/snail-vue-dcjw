@@ -18,7 +18,7 @@
             <van-icon v-if="!citme.checked && citme.isShow"  slot="right-icon" class="icon-clear"  name="clear" />
           </van-cell>
 
-          <van-button v-if='showBtn' type="primary">交卷</van-button>
+          <van-button v-if='showBtn' type="primary" :chick="submitPaper()">交卷</van-button>
         </div>
       </van-cell-group>
     </v-touch>
@@ -44,6 +44,8 @@
         //记录下标,默认0
         recordIndexShow:0,
         showBtn:false,
+        uuid:'',
+        beginTime:new Date().getTime(),
         questionMap:[]
       }
     },
@@ -69,19 +71,17 @@
           this.questionMap[pindex].option[cindex].isShow=true;
           this.questionMap[pindex].checked=true;
           this.isSelect=true;
-     /*     this.$http.post('/dcwj/saveAnswer.htm', {
-            type:this.ptype,
-            openid:this.openid,
-            currentIndex:this.currentIndex,
-            question:JSON.stringify(this.questionMap[pindex])
-          }).then((response)=>{
-            console.log(response);
-          }).catch(function (response) {
-            console.log(response);
-          });*/
+          //一题一分
+          if(isRight){
+            this.questionMap[pindex]['score']=1;
+          }else{
+            this.questionMap[pindex]['score']=0;
+          }
+
           if(pindex == this.total-1){
             this.showBtn=true;
           }
+
         }
       },
       onSwipeLeft(){
@@ -116,6 +116,7 @@
           this.total=rst['total'];
           this.questionMap =this.questionMap.concat(rst.resultList);
           this.questionMap[this.recordIndexShow].ishow=true;
+          this.uuid=rst.uuid;
           if(isSwipeLeft){
             for (let i = 0 ; i < this.questionMap.length; i++){
               this.questionMap[i].ishow=false;
@@ -127,8 +128,31 @@
           console.log(response);
         });
       },
+      submitPaper(){
+        //提交试卷
+        let paperDetail = {};
+        let score = 0;
+        for (let i = 0 ; i < this.questionMap.length; i++){
+          score += this.questionMap[i]['score'];
+        }
+        paperDetail['score']=score;
+        paperDetail['bkcx']='小型汽车';
+        paperDetail['bkkm']='科目一下';
+        paperDetail['ksdd']='科目一理论考试';
+        paperDetail['time']=Math.round((new Date().getTime()-this.beginTime)/1000);
+        paperDetail['uuid']=this.uuid;
 
+        this.$http.post('/dcwj/submitPaper.htm', {
+               openid:this.openid,
+               uuid:this.uuid,
+               paperDetail:JSON.stringify(paperDetail)
+        }).then((response)=>{
+               console.log(response.data);
+        }).catch(function (response) {
+               console.log(response);
+        });
 
+      }
     }
   }
 </script>
