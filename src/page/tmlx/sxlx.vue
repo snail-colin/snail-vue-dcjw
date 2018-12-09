@@ -2,14 +2,18 @@
     <div class="sxlx">
         <v-touch v-on:swipeleft="onSwipeLeft" v-on:swiperight="onSwipeRight">
 
+          <div class="loadingbox"  v-show="isload">
+            <van-loading type="spinner" />
+          </div>
         <van-nav-bar
+          v-show="!isload"
           :title="title"
           left-text="返回"
           :right-text="progress"
           left-arrow
           @click-left="onClickLeft"/>
 
-          <van-cell-group>
+          <van-cell-group v-show="!isload">
             <div v-for='(itme,index) in questionMap' :key='index' v-if="itme.ishow">
               <van-cell   :value="setProperty(itme.question,itme.type)"/>
               <van-cell  v-for='(citme,cindex) in itme.option' :key='cindex'   :title="citme.name" clickable @click="click(index,cindex,citme.isRight)">
@@ -41,11 +45,13 @@
       name: "sxlx",
       data() {
         return {
+          isload:true,
           value:3,
           size:16,
           total:0,
           ptype:this.$route.query.ptype,
-          title:this.$route.query.ptitle,
+          title:this.$route.query.ptitle == 'sxlx'?'顺序练习':'随机练习',
+          // title:'练习',
           //默认0
           currentIndex:this.$route.query.recordIndex == undefined?0:this.$route.query.recordIndex-1,
           isSelect:false,
@@ -139,6 +145,7 @@
               openid:this.openid
             }).then((response)=>{
                 let rst =  response.data;
+                this.isload=false;
                 this.total=rst['total'];
                 this.questionMap =this.questionMap.concat(rst.resultList);
                 this.questionMap[this.recordIndexShow].ishow=true;
@@ -160,6 +167,11 @@
 <style lang="less" scoped>
 .sxlx{
   text-align: left;
+
+  height: 100%;
+  .touch{
+    height: 100%;
+  }
 
   .van-icon-check{
     font-size: 19px;
@@ -203,6 +215,16 @@
       min-height: 200px;
       background-color: aliceblue;
     }
+  }
+  .loadingbox{
+    text-align:center;
+    margin: auto;
+    height:100%;
+  }
+  .van-loading{
+    top: 30% !important;
+    text-align:center !important;
+    margin: auto !important;
   }
 }
 </style>

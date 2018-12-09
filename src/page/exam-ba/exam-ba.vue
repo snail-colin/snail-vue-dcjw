@@ -2,13 +2,18 @@
   <div class="sxlx">
     <v-touch class="touch" v-on:swipeleft="onSwipeLeft" v-on:swiperight="onSwipeRight">
 
+      <div class="loadingbox"  v-show="isload">
+        <van-loading type="spinner" />
+      </div>
       <van-nav-bar
-        :title="title"
+        v-show="!isload"
         left-text="返回"
         :right-text="progress"
         left-arrow
-        @click-left="onClickLeft"/>
-      <van-cell-group>
+        @click-left="onClickLeft">
+          <count-down  v-if="!isload" :start-time="startTime" :end-time="endTime"  v-on:end_callback="countDownE_cb()"  :minutesTxt="'分'" :secondsTxt="'秒'" slot="title"></count-down>
+      </van-nav-bar>
+      <van-cell-group  v-show="!isload">
         <div v-for='(item,index) in questionMap' :key='index' v-if="item.ishow">
              <van-cell >
                <span v-html="setProperty(item.question,item.type)"></span>
@@ -20,8 +25,6 @@
               <van-icon v-if="!citem.checked && citem.isShow"  slot="right-icon" class="icon-checked"  name="checked" />
             </van-cell>
         </div>
-
-
       </van-cell-group>
       <van-button v-if='showBtn' type="primary"  clickable @click="submitPaper()">交卷</van-button>
 
@@ -31,17 +34,24 @@
 </template>
 
 <script>
+  import CountDown from 'vue2-countdown';
+  import { Dialog } from 'vant';
+
   export default {
     name: "exam-ba",
+    components: {
+      CountDown
+    },
     data() {
       return {
+        isload:true,
         value:3,
         size:16,
         total:0,
         ptype:1,
         title:'考试',
-        // categoryCode:'baks',
-        categoryCode:'test',
+        categoryCode:'baks',
+        // categoryCode:'test',
         examType:"1",
         //默认0
         currentIndex:0,
@@ -55,6 +65,9 @@
         uuid:'',
         beginTime:new Date().getTime(),
         itemImg:false,
+        startTime:( new Date() ).getTime(),
+        endTime:( new Date() ).getTime() + 1000*1*60*45,
+        // endTime:( new Date() ).getTime() + 1000*1*5,
         questionMap:[]
       }
     },
@@ -136,7 +149,16 @@
         this.questionMap[this.currentIndex].ishow=true;
         this.itemImg=false;
       },
+      countDownE_cb: function (x) {
+        Dialog.alert({
+          title: '交卷',
+          message: '考试时间到了，无法继续作答'
+        }).then(() => {
+          this.submitPaper();
+        });
+      },
       initData(isSwipeLeft){
+
         this.$http.post('/dcwj/getTestPaper.htm', {
           type:this.ptype,
           openid:this.openid,
@@ -144,9 +166,15 @@
           categoryCode:this.categoryCode
         }).then((response)=>{
           let rst =  response.data;
-          this.total=rst['total'];
+          // this.total=rst['total'];
+          if(rst != null &&  rst.time != undefined && rst.tjsj != undefined){
+           this.$router.push({path:'/exam-ba-result',query:{openid:this.openid}});
+          }
+
+          this.total=100;
+          this.isload=false;
           this.questionMap =this.questionMap.concat(rst.resultList);
-          console.info(this.questionMap)
+          // console.info(this.questionMap);
           this.questionMap[this.recordIndexShow].ishow=true;
           this.uuid=rst.uuid;
           if(isSwipeLeft){
@@ -155,7 +183,10 @@
             }
             this.questionMap[this.currentIndex].ishow=true;
           }
+          this.startTime=( new Date() ).getTime();
+          this.endTime = ( new Date() ).getTime() + 1000*1*60*45;
           // console.info(this.questionMap)
+
         }).catch(function (response) {
           console.log(response);
         });
@@ -165,12 +196,19 @@
         let paperDetail = {};
         let score = 0;
         for (let i = 0 ; i < this.questionMap.length; i++){
-          score += this.questionMap[i]['score'];
+          if(this.questionMap[i]['score'] != undefined){
+            score += this.questionMap[i]['score'];
+          }
         }
         paperDetail['score']=score;
         paperDetail['bkkm']='保安试题理论考试';
         paperDetail['ksdd']='互联模拟考试';
-        paperDetail['time']=Math.round((new Date().getTime()-this.beginTime)/1000);
+        let cwmintues = $(".cwmintues").text() == "" ? 0:$(".cwmintues").text();
+        let  cwseconds = $(".cwseconds").text()== "" ? 0:$(".cwseconds").text();
+        // paperDetail['time']=Math.round((new Date().getTime()-this.beginTime)/1000);
+        console.info("cwmintues:" + cwmintues);
+        console.info("cwseconds:" + cwseconds);
+        paperDetail['time']= (44-cwmintues)*60 + (60-cwseconds);
         paperDetail['uuid']=this.uuid;
 
         this.$http.post('/dcwj/submitPaper.htm', {
@@ -254,6 +292,17 @@
       position: absolute;
       bottom:20px;
       right: 20px;
+    }
+
+    .loadingbox{
+      text-align:center;
+      margin: auto;
+      height:100%;
+    }
+    .van-loading{
+      top: 30%;
+      text-align:center;
+      margin: auto;
     }
   }
 </style>

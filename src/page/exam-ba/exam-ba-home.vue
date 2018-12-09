@@ -51,8 +51,31 @@
           return{
             // openid:"test-openid",
             openid:this.$route.query.openid,
-            showBtn:this.$route.query.openid == undefined? false:true
+            // showBtn:this.$route.query.openid == undefined? false:true
+            showBtn:false
           }
+      },
+      created:function(){
+        this.showBtn = this.$route.query.openid == undefined? false:true;
+        if(this.openid){
+          this.initData();
+        }
+      },
+      methods:{
+        initData(){
+          this.$http.post('/dcwj/getTestPaperResult.htm', {
+            type:this.ptype,
+            openid:this.openid,
+          }).then((response)=>{
+            let data =  response.data;
+           if(data != null &&  data.time != "" && data.tjsj != ""){
+             this.showBtn=false;
+             this.$router.push({path:'/exam-ba-result',query:{openid:this.openid}});
+           }
+          }).catch(function (response) {
+            console.log(response);
+          });
+        },
       }
     }
 </script>

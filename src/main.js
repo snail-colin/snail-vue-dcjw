@@ -9,8 +9,9 @@ import '@/assets/icon/iconfont.css'
 import 'vue2-animate/dist/vue2-animate.min.css';
 import VueLazyload from 'vue-lazyload' // 懒加载
 import axios from 'axios';
-
+import 'jquery';
 var VueTouch = require('vue-touch');
+
 
 Vue.use(VueLazyload, {
   preLoad: 1.3,
@@ -21,6 +22,7 @@ Vue.use(VueLazyload, {
 Vue.use(VueTouch);
 Vue.config.productionTip = false;
 Vue.use(Vant);
+
 Vue.prototype.$http = axios;
 /* eslint-disable no-new */
 

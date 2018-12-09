@@ -121,10 +121,10 @@
           width: 100%;
         }
         .bg2{
-          position: relative;
+          position: absolute;
           background-color: white;
           height: 100%;
-          z-index: 2;
+          z-index: 10;
           width: 96%;
           text-align: center;
           left: 2%;
